@@ -84,10 +84,14 @@ public class MainController {
         if (!userService.validateSignature(id, authentication)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        Map<String, String> userUrls = urlService.getUsersUrls(id);
 
+        Map<String, String> urlPairs = new HashMap<>();
 
-        return new ResponseEntity<>(userUrls, HttpStatus.OK);
+        for (String token : urlService.getUsersUrlsTokens(id)) {
+            urlPairs.put(urlService.getUrlByToken(token).getSourceUrl(), token);
+        }
+
+        return new ResponseEntity<>(urlPairs, HttpStatus.OK);
     }
 
 

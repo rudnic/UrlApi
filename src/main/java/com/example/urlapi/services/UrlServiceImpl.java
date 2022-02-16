@@ -6,6 +6,7 @@ import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -36,4 +37,8 @@ public class UrlServiceImpl implements UrlService {
 
     }
 
+    @Override
+    public List<String> getUsersUrlsTokens(String userId) {
+        return urlRepository.getUsersUrls(userId);
+    }
 }
