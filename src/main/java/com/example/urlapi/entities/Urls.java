@@ -18,6 +18,9 @@ public class Urls {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "count_clicks")
+    private int countClicks;
+
     public Urls(String sourceUrl, String token, String userId) {
         this.sourceUrl = sourceUrl;
         this.token = token;

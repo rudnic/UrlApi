@@ -10,4 +10,6 @@ public interface UrlService {
     public String getUrlToken(String url);
     public String getUrlByToken(String token);
     public List<String> getUsersUrlsTokens(String userId);
+    public void incCountClicks(String token);
+    public Integer getCountClicks(String token);
 }

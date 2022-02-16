@@ -23,10 +23,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Controller
@@ -56,25 +53,29 @@ public class MainController {
     public ResponseEntity<?> getShort(@RequestHeader("Signature") String authentication,
                                            @RequestParam(name = "id") String id,
                                            @RequestParam(name = "url") String url) throws NoSuchAlgorithmException {
+
         if (!userService.validateSignature(id, authentication)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         Map<String, String> res = new HashMap<>();
+        String token = new Hashids(url + id).encode(6);
 
-        if (urlService.getUrlToken(url) == null) {
-            String token = new Hashids(url).encode(6);
-            urlService.createUrlToken(new Urls(url, token, id));
+        if (urlService.getUrlByToken(token) != null) {
             res.put(url, token);
-            return new ResponseEntity<>(res, HttpStatus.CREATED);
+            return new ResponseEntity<>(res, HttpStatus.FOUND);
         }
 
-        res.put("token", urlService.getUrlToken(url));
-        return new ResponseEntity<>(res, HttpStatus.FOUND);
+        urlService.createUrlToken(new Urls(url, token, id));
+        res.put(url, token);
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
+
+
     }
 
     @GetMapping("/{token}")
     public ResponseEntity<?> redirectToSourceUrl(@PathVariable String token) {
+
         String url = urlService.getUrlByToken(token);
 
         if (url == null) {
@@ -84,7 +85,7 @@ public class MainController {
         if (!url.startsWith("http")) {
             url = "http://" + url;
         }
-
+        urlService.incCountClicks(token);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(url)).build();
     }
 
@@ -96,10 +97,15 @@ public class MainController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        Map<String, String> urlPairs = new HashMap<>();
+        Map<String, Map<String, String>> urlPairs = new HashMap<>();
 
         for (String token : urlService.getUsersUrlsTokens(id)) {
-            urlPairs.put(urlService.getUrlByToken(token), token);
+
+            Map<String, String> urlInfo = new HashMap<>();
+            urlInfo.put("token", token);
+            urlInfo.put("clicks_count", urlService.getCountClicks(token).toString());
+
+            urlPairs.put(urlService.getUrlByToken(token), urlInfo);
         }
 
         return new ResponseEntity<>(urlPairs, HttpStatus.OK);

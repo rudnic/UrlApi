@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService{
             return false;
         }
         String expectedDigest = HashingDigest.doHashDigest(id, secretKey);
-        System.out.println(expectedDigest);
         if (signature.equals(expectedDigest)) {
             return true;
         }

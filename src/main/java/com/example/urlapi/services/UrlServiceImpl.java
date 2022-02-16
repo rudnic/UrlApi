@@ -17,7 +17,7 @@ public class UrlServiceImpl implements UrlService {
 
     @Override
     public void createUrlToken(Urls url) {
-
+        urlRepository.save(url);
     }
 
     @Override
@@ -34,5 +34,15 @@ public class UrlServiceImpl implements UrlService {
     @Override
     public List<String> getUsersUrlsTokens(String userId) {
         return urlRepository.getUsersUrls(userId);
+    }
+
+    @Override
+    public void incCountClicks(String token) {
+        urlRepository.incCountClicks(token);
+    }
+
+    @Override
+    public Integer getCountClicks(String token) {
+        return urlRepository.getCountClicks(token);
     }
 }
