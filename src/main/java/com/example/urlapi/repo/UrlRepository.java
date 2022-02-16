@@ -29,4 +29,9 @@ public interface UrlRepository extends JpaRepository<Urls, Long> {
 
     @Query("select u.countClicks from Urls u where u.token = ?1")
     public Integer getCountClicks(String token);
+
+    @Query("delete from Urls u where u.token = ?1")
+    @Modifying
+    @Transactional
+    public void deleteUrlToken(String token);
 }

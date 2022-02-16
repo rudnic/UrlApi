@@ -55,7 +55,7 @@ public class MainController {
                                            @RequestParam(name = "url") String url) throws NoSuchAlgorithmException {
 
         if (!userService.validateSignature(id, authentication)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         Map<String, String> res = new HashMap<>();
@@ -94,7 +94,7 @@ public class MainController {
                                           @RequestParam(name = "id") String id) throws NoSuchAlgorithmException {
 
         if (!userService.validateSignature(id, authentication)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         Map<String, Map<String, String>> urlPairs = new HashMap<>();
@@ -109,8 +109,25 @@ public class MainController {
         }
 
         return new ResponseEntity<>(urlPairs, HttpStatus.OK);
+
     }
 
+    @DeleteMapping("/{token}")
+    public ResponseEntity<?> deleteUrlToken(@RequestHeader("Signature") String authentication,
+                                            @RequestParam(name = "id") String id,
+                                            @PathVariable String token) throws NoSuchAlgorithmException {
+
+        if (!userService.validateSignature(id, authentication)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        if (urlService.getUrlByToken(token) == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        urlService.deleteUrlToken(token);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 }

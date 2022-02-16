@@ -12,4 +12,5 @@ public interface UrlService {
     public List<String> getUsersUrlsTokens(String userId);
     public void incCountClicks(String token);
     public Integer getCountClicks(String token);
+    public void deleteUrlToken(String token);
 }

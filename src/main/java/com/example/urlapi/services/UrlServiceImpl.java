@@ -45,4 +45,9 @@ public class UrlServiceImpl implements UrlService {
     public Integer getCountClicks(String token) {
         return urlRepository.getCountClicks(token);
     }
+
+    @Override
+    public void deleteUrlToken(String token) {
+        urlRepository.deleteUrlToken(token);
+    }
 }
