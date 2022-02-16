@@ -16,19 +16,13 @@ public class UrlServiceImpl implements UrlService {
     private UrlRepository urlRepository;
 
     @Override
-    public void createUrlToken(String url) {
+    public void createUrlToken(Urls url) {
 
     }
 
     @Override
-    public String getUrlToken(String url, String userId) {
-        String urlToken = urlRepository.getUrlToken(url);
-        if (urlToken == null) {
-            urlToken = new Hashids(url).encode(6);
-            urlRepository.save(new Urls(url, urlToken, userId));
-        }
-
-        return urlToken;
+    public String getUrlToken(String url) {
+        return urlRepository.getUrlToken(url);
     }
 
     @Override

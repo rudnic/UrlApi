@@ -5,6 +5,7 @@ import com.example.urlapi.entities.Urls;
 import com.example.urlapi.entities.User;
 import com.example.urlapi.services.UrlService;
 import com.example.urlapi.services.UserService;
+import org.hashids.Hashids;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -56,19 +57,29 @@ public class MainController {
                                            @RequestParam(name = "id") String id,
                                            @RequestParam(name = "url") String url) throws NoSuchAlgorithmException {
         if (!userService.validateSignature(id, authentication)) {
-            return new ResponseEntity<>("ok3", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         Map<String, String> res = new HashMap<>();
-        res.put("url", url);
-        res.put("token", urlService.getUrlToken(url, id));
 
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        if (urlService.getUrlToken(url) == null) {
+            String token = new Hashids(url).encode(6);
+            urlService.createUrlToken(new Urls(url, token, id));
+            res.put(url, token);
+            return new ResponseEntity<>(res, HttpStatus.CREATED);
+        }
+
+        res.put("token", urlService.getUrlToken(url));
+        return new ResponseEntity<>(res, HttpStatus.FOUND);
     }
 
     @GetMapping("/{token}")
     public ResponseEntity<?> redirectToSourceUrl(@PathVariable String token) {
         String url = urlService.getUrlByToken(token);
+
+        if (url == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         if (!url.startsWith("http")) {
             url = "http://" + url;
@@ -93,6 +104,7 @@ public class MainController {
 
         return new ResponseEntity<>(urlPairs, HttpStatus.OK);
     }
+
 
 
 }
