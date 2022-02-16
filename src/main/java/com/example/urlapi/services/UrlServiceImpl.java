@@ -32,7 +32,7 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @Override
-    public Urls getUrlByToken(String token) {
+    public String getUrlByToken(String token) {
         return urlRepository.getUrlByToken(token);
 
     }

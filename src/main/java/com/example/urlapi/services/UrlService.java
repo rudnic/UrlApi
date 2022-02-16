@@ -8,6 +8,6 @@ import java.util.Map;
 public interface UrlService {
     public void createUrlToken(String url);
     public String getUrlToken(String url, String userId);
-    public Urls getUrlByToken(String token);
+    public String getUrlByToken(String token);
     public List<String> getUsersUrlsTokens(String userId);
 }

@@ -14,8 +14,8 @@ public interface UrlRepository extends JpaRepository<Urls, Long> {
     @Query("select u.token from Urls u where u.sourceUrl = ?1")
     public String getUrlToken(String url);
 
-    @Query("select u from Urls u where u.token = ?1")
-    public Urls getUrlByToken(String token);
+    @Query("select u.sourceUrl from Urls u where u.token = ?1")
+    public String getUrlByToken(String token);
 
     @Query("select u.token from Urls u where u.userId = ?1")
     public List<String> getUsersUrls(String userId);

@@ -68,7 +68,7 @@ public class MainController {
 
     @GetMapping("/{token}")
     public ResponseEntity<?> redirectToSourceUrl(@PathVariable String token) {
-        String url = urlService.getUrlByToken(token).getSourceUrl();
+        String url = urlService.getUrlByToken(token);
 
         if (!url.startsWith("http")) {
             url = "http://" + url;
@@ -88,7 +88,7 @@ public class MainController {
         Map<String, String> urlPairs = new HashMap<>();
 
         for (String token : urlService.getUsersUrlsTokens(id)) {
-            urlPairs.put(urlService.getUrlByToken(token).getSourceUrl(), token);
+            urlPairs.put(urlService.getUrlByToken(token), token);
         }
 
         return new ResponseEntity<>(urlPairs, HttpStatus.OK);
