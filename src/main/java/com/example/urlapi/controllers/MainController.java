@@ -128,5 +128,10 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/isitwork")
+    public ResponseEntity<?> checkWorks() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }
