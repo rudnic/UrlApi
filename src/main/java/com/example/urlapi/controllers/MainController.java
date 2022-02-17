@@ -26,7 +26,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @RestController
-@Controller
 public class MainController {
 
     @Autowired
